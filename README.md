@@ -19,8 +19,16 @@
 - ext-dom
 
 ```shell
-$ composer require overtrue/qcloud-cos-client -vvv
+$ composer require lyhiving/qcloud-cos-client -vvv
 ```
+## 额外说明
+
+为了兼容自定义域名在CDN的使用，在上传删除等操作的时候使用官方域名（内网统一）。
+
+为了方便，需要在CDN上开启`私有存储桶访`。
+
+只需要更改.env 中的`COS_DOMAIN`即可。
+
 
 ## 配置
 

@@ -1,6 +1,6 @@
 {
-  "name": "overtrue/qcloud-cos-client",
-  "description": "Client of QCloud.com COS",
+  "name": "lyhiving/qcloud-cos-client",
+  "description": "Client of QCloud.com COS fix domain",
   "license": "MIT",
   "authors": [
     {

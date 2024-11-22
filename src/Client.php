@@ -39,9 +39,12 @@ class Client
 
     protected string $domain = '<bucket>-<app_id>.cos.<region>.myqcloud.com';
 
+
     protected \GuzzleHttp\Client $client;
 
     protected array $requiredConfigKeys = [];
+
+    protected $orig_domain;
 
     /**
      * @throws \Overtrue\CosClient\Exceptions\InvalidConfigException
@@ -93,6 +96,10 @@ class Client
     public function __call($method, $arguments)
     {
         try {
+            if ($method != 'GET') {
+                $this->configureDomain(true);
+                $this->configureHttpClientOptions();
+            }
             return new Response(\call_user_func_array([$this->getHttpClient(), $method], $arguments));
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             throw new ClientException($e);
@@ -103,8 +110,10 @@ class Client
         }
     }
 
-    protected function configureDomain(): static
+    protected function configureDomain($useOrig=false): static
     {
+        if (!$this->orig_domain)
+            $this->orig_domain = $this->domain;
         $replacements = [
             '<uin>' => $this->config->get('uin'),
             '<app_id>' => $this->config->get('app_id'),
@@ -112,9 +121,9 @@ class Client
             '<bucket>' => $this->config->get('bucket'),
         ];
 
-        $domain = $this->config->get('domain');
+        $domain = !$useOrig ? $this->config->get('domain'):null;
 
-        $this->domain = trim($domain ?: str_replace(array_keys($replacements), $replacements, $this->domain), '/');
+        $this->domain = trim($domain ?: str_replace(array_keys($replacements), $replacements, $this->orig_domain), '/');
 
         return $this;
     }
